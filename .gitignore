@@ -4,7 +4,6 @@
 **/bin/
 
 *.log
-*.db
 **.dll
 *.pdb
 *.exe

@@ -12,10 +12,10 @@ namespace WebApplication.Chat.Controllers
     [ApiController]
     public class GroupController : ControllerBase
     {
-        private readonly ChatDataContext _chatDataContext;//св-во для получения инфы из бд
+        private readonly ChatDataContext _chatDataContext;
 
         public GroupController(ILogger<GroupController> logger,
-                              ChatDataContext chatDataContext)// логер для выведения вспомогательной инфы
+                              ChatDataContext chatDataContext)
         {
             _chatDataContext = chatDataContext;
         }
@@ -37,7 +37,7 @@ namespace WebApplication.Chat.Controllers
             return Ok(userGroups);
         }
 
-        [HttpPut]//атрибут для добавления объекта
+        [HttpPut]
         public ActionResult CreateGroup ([FromBody] CreateGroupModel model)
         {
             var group = new GroupEntity

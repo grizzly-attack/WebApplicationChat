@@ -11,7 +11,7 @@ public class ChatDataContext : DbContext
 
 	}
 
-	public virtual DbSet<UserEntity> Users { get; set; } = null!;//virtual потому что так надо --_--
+	public virtual DbSet<UserEntity> Users { get; set; } = null!;
 	public virtual DbSet<MessageEntity> Messages { get; set; } = null!;
 	public virtual DbSet<GroupEntity> Groups { get; set; } = null!;
 	public virtual DbSet<LogEventsEntity> LogEvents { get; set; } = null!;

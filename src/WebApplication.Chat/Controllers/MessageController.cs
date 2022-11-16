@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;//библиотка для обработки веб-запросов
+using Microsoft.AspNetCore.Mvc;
 using WebApplication.Chat.Controllers.Models;
 using WebApplication.Chat.Database;
 using WebApplication.Chat.Database.Entities;
