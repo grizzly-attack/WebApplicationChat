@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -42,7 +43,9 @@ namespace WebApplication.Chat.Controllers
         [HttpPut]
         public ActionResult CreateUser([FromBody][Required] CreateUserModel model)
         {
-            var userEntity = new UserEntity { Name = model.Name, Login = model.Login, Password = model.Password, LastEnter = DateTime.UtcNow };
+            var sha256 = SHA256.Create();
+            var passwordHash = Convert.ToBase64String(sha256.ComputeHash(Encoding.UTF8.GetBytes(model.Password)));
+            var userEntity = new UserEntity { Name = model.Name, Login = model.Login, Password = passwordHash, LastEnter = DateTime.UtcNow };
             _chatDataContext.Users.Add(userEntity);
             _chatDataContext.SaveChanges();
 
@@ -52,10 +55,12 @@ namespace WebApplication.Chat.Controllers
         [HttpPost]
         public ActionResult Login([FromBody]LoginModel model)
         {
+            var sha256 = SHA256.Create();
+            var passwordHash = Convert.ToBase64String(sha256.ComputeHash(Encoding.UTF8.GetBytes(model.Password)));
             var user = _chatDataContext.Users.FirstOrDefault(u => u.Login == model.Login);
             if (user == null) 
                 return BadRequest("Пользователь не найден");
-            if (user.Password != model.Password) 
+            if (user.Password != passwordHash) 
                 return BadRequest("Неверный пароль");
 
 

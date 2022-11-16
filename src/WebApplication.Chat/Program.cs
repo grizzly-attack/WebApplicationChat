@@ -24,17 +24,15 @@ namespace WebApplication.Chat
 
             builder.Host.UseNLog();
 
-            // Add services to the container.
             builder.Services.AddControllers();
 
-            // Использование авторизации
             builder.Services
                 .AddAuthentication(schema =>
             {
-                schema.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;//тип токена
-                schema.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;//откуда берем (поле)
+                schema.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                schema.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
-                .AddJwtBearer(p =>//настройка различных параметров токена
+                .AddJwtBearer(p =>
             {
                 p.TokenValidationParameters = new TokenValidationParameters
                 {
@@ -44,11 +42,11 @@ namespace WebApplication.Chat
                 };
             });
 
-            // Проверка авторизации
+
             builder.Services.AddAuthorization();
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            builder.Services.AddEndpointsApiExplorer();//Генерирует страницу для отображения методов, которые можно вызвать в приложении
+            builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(options =>
             {
                 options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
@@ -60,34 +58,32 @@ namespace WebApplication.Chat
                     Type = SecuritySchemeType.ApiKey,
                 });
                 options.OperationFilter<SecurityRequirementsOperationFilter>();
-            });//Генерирует страницу для отображения методов, которые можно вызвать в приложении
+            });
             builder.Services
                 .AddDbContext<ChatDataContext>(
-                    builder => builder.UseNpgsql(
-                        "Host=localhost;Port=5432;Database=chatdb;Username=postgres;Password=1;"));//Подключение БД
+                    dbbuilder => dbbuilder.UseNpgsql(builder.Configuration.GetConnectionString("chatdb")));
 
-            var app = builder.Build();//СОздает ядро приложения
+            var app = builder.Build();
 
 
-            app.UseHttpsRedirection();//редиректит незащищенное подключение
-            app.UseSwagger();//делает доступным файл с описанием методов приложения
-            app.UseSwaggerUI();//делает технический интерфейс для запросов к приложению
-            app.UseAuthentication();//добавляет аутонтификацию
-            app.UseAuthorization();//добавляет авторизацию
-            app.MapControllers();//делает обработку запросов в контроллерах
-			
-			MigrationDb(app.Services);
-						
-            app.Run();//запуск приложения
+            app.UseHttpsRedirection();
+            app.UseSwagger();
+            app.UseSwaggerUI();
+            app.UseAuthentication();
+            app.UseAuthorization();
+            app.MapControllers();
+
+            MigrationDb(app.Services);
+
+            app.Run();
         }
 
         private static void MigrationDb(IServiceProvider appServices)
         {
-            using(var scope = appServices.CreateScope())
+            using (var scope = appServices.CreateScope())
             {
-                var dbContext = scope.ServiceProvider.GetRequiredService<ChatDataContext>();//контекст для работы с базой данных
-                //dbContext.Database.EnsureCreated();//создаем базу данных
-                dbContext.Database.Migrate();//обновляем бд
+                var dbContext = scope.ServiceProvider.GetRequiredService<ChatDataContext>();
+                dbContext.Database.Migrate();
             }
         }
     }
