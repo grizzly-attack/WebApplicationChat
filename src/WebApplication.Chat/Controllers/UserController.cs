@@ -24,12 +24,12 @@ namespace WebApplication.Chat.Controllers
             _chatDataContext = chatDataContext;
         }
 
-        [HttpGet]
-        [Authorize]
-        public ActionResult GetUsers()
-        {
-            return Ok(_chatDataContext.Users.ToArray());
-        }
+        //[HttpGet]
+        //[Authorize]
+        //public ActionResult GetUsers()
+        //{
+        //    return Ok(_chatDataContext.Users.ToArray());
+        //}
 
         [HttpGet]
         [Authorize]
