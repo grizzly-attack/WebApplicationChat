@@ -42,6 +42,17 @@ namespace WebApplication.Chat
                 };
             });
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy(name: "CorsPolicy",
+                                  policy =>
+                                  {
+                                      policy.AllowAnyOrigin()
+                                      .AllowAnyMethod()
+                                      .AllowAnyHeader();
+                                  });
+            });
+
 
             builder.Services.AddAuthorization();
 
@@ -72,6 +83,7 @@ namespace WebApplication.Chat
             app.UseAuthentication();
             app.UseAuthorization();
             app.MapControllers();
+            app.UseCors("CorsPolicy");
 
             MigrationDb(app.Services);
 
